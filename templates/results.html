@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #f1f1f1;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 36px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .safe-message {
+            padding: 15px;
+            background-color: #4caf50;
+            color: white;
+            border-radius: 5px;
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .unsafe-message {
+            padding: 15px;
+            background-color: #f44336;
+            color: white;
+            border-radius: 5px;
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .result-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .result-list li {
+            margin-bottom: 15px;
+        }
+
+        .result-list a {
+            color: #4caf50;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+
+        .result-list a:hover {
+            color: #fff;
+        }
+
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Results for "{{ query }}"</h1>
+
+    {% if is_safe %}
+        <div class="safe-message">This app is <strong>safe</strong> to use. It has less than 10 bad reviews.</div>
+    {% else %}
+        <div class="unsafe-message">Warning! This app is <strong>not safe</strong> to use. It has <strong>{{ bad_reviews }}</strong> bad reviews.</div>
+    {% endif %}
+
+    <ul class="result-list">
+        {% for result in search_results %}
+            <li><a href="{{ result }}" target="_blank">{{ result }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <footer>
+        <p>Powered by Flask Search Engine</p>
+    </footer>
+
+</body>
+</html>
