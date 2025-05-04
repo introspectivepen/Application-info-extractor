@@ -2,7 +2,7 @@ from flask import Flask, render_template, request
 from cachetools import TTLCache
 import asyncio
 import os
-from serpapi.google_search import GoogleSearch
+from serpapi import GoogleSearch
 from requests.exceptions import ReadTimeout
 
 app = Flask(__name__)
