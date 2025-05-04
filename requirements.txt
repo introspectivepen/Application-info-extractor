@@ -1,5 +1,5 @@
 Flask==2.3.2
 cachetools==5.5.2
-serpapi==0.8.0
+serpapi==0.1.5
 requests==2.31.0
 gunicorn==21.2.0
