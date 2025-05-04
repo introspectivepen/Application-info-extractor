@@ -4,90 +4,157 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Results</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1e1e1e;
-            color: #f1f1f1;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            min-height: 100vh;
             padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         h1 {
-            font-size: 36px;
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1e3c72;
             text-align: center;
             margin-bottom: 20px;
         }
 
-        .safe-message {
+        .sentiment-box {
             padding: 15px;
-            background-color: #4caf50;
-            color: white;
-            border-radius: 5px;
+            border-radius: 8px;
             text-align: center;
-            animation: fadeIn 1s ease-in-out;
+            font-weight: 500;
+            margin-bottom: 20px;
+            background: #e6f4ea;
+            color: #2e7d32;
+            border: 1px solid #4caf50;
+            animation: slideIn 0.5s ease-in-out;
         }
 
-        .unsafe-message {
-            padding: 15px;
-            background-color: #f44336;
-            color: white;
-            border-radius: 5px;
-            text-align: center;
-            animation: fadeIn 1s ease-in-out;
+        .sentiment-box.neutral {
+            background: #fffde7;
+            color: #f57c00;
+            border: 1px solid #ff9800;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .sentiment-box.bad {
+            background: #ffebee;
+            color: #d32f2f;
+            border: 1px solid #f44336;
+        }
+
+        .sentiment-box span {
+            font-weight: 600;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         .result-list {
             list-style: none;
             padding: 0;
-            margin: 20px 0;
         }
 
         .result-list li {
             margin-bottom: 15px;
         }
 
-        .result-list a {
-            color: #4caf50;
-            text-decoration: none;
-            font-size: 18px;
-            transition: color 0.3s ease;
+        .result-card {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #eee;
         }
 
-        .result-list a:hover {
-            color: #fff;
+        .result-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-card a {
+            color: #2a5298;
+            text-decoration: none;
+            font-size: 1rem;
+            word-break: break-all;
+        }
+
+        .result-card a:hover {
+            color: #1e3c72;
+            text-decoration: underline;
         }
 
         footer {
-            margin-top: 50px;
             text-align: center;
-            color: #aaa;
+            margin-top: 30px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+            }
+
+            .result-card {
+                padding: 10px;
+            }
+
+            .sentiment-box {
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1>Results for "{{ query }}"</h1>
 
-    <h1>Results for "{{ query }}"</h1>
+        <div class="sentiment-box {% if sentiment_category in ['Bad', 'Mostly Bad'] %}bad{% elif sentiment_category == 'Neutral' %}neutral{% endif %}">
+            <p>Average Sentiment: <span>{{ "%.1f" | format(sentiment_percentage) }}% Good</span></p>
+            <p>Sentiment Category: <span>{{ sentiment_category }}</span></p>
+            <p>Good Reviews: <span>{{ num_good_reviews }}</span>, Bad Reviews: <span>{{ num_bad_reviews }}</span></p>
+        </div>
 
-    {% if is_safe %}
-        <div class="safe-message">This app is <strong>safe</strong> to use. It has less than 10 bad reviews.</div>
-    {% else %}
-        <div class="unsafe-message">Warning! This app is <strong>not safe</strong> to use. It has <strong>{{ bad_reviews }}</strong> bad reviews.</div>
-    {% endif %}
+        <ul class="result-list">
+            {% for result in search_results %}
+                <li><div class="result-card"><a href="{{ result }}" target="_blank">{{ result }}</a></div></li>
+            {% endfor %}
+        </ul>
 
-    <ul class="result-list">
-        {% for result in search_results %}
-            <li><a href="{{ result }}" target="_blank">{{ result }}</a></li>
-        {% endfor %}
-    </ul>
-
-    <footer>
-        <p>Powered by Flask Search Engine</p>
-    </footer>
-
+        <footer>
+            <p>Powered by Flask Search Engine</p>
+        </footer>
+    </div>
 </body>
 </html>
